@@ -1,0 +1,36 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=1,vmem=8g,walltime=0:05:00
+#PBS -N tck2trk
+#PBS -V
+
+# Extract fields from config.json
+tck=$(jq -r .tck config.json)
+t1w=$(jq -r .t1w config.json)
+t2w=$(jq -r .t2w config.json)
+parc=$(jq -r .parc config.json)
+mask=$(jq -r .mask config.json)
+
+# Assign the first available field to 'anat'
+if [ -n "$t1w" ] && [ "$t1w" != "null" ]; then
+    anat=$t1w
+elif [ -n "$21w" ] && [ "$t1w" != "null" ]; then
+    anat=$t2w
+elif [ -n "$parc" ] && [ "$parc" != "null" ]; then
+    anat=$parc
+elif [ -n "$mask" ] && [ "$mask" != "null" ]; then
+    anat=$mask
+else
+    echo "Error: No valid anatomical reference found in config.json" >&2
+    exit 1
+fi
+
+# Output the selected anatomical reference
+echo "Anatomical reference selected: $anat"
+
+module load singularity 2> /dev/null
+
+set -e
+
+singularity exec -e docker://brainlife/dipy:0.14 python ./tck2trk.py ${anat} ${tck}
+mkdir trk
+cp ${tcl//'.tck'/'.trk'} ./trk
