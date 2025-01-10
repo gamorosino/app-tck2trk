@@ -23,17 +23,17 @@ def tck2trk(args=None):
     try:
         nii = nib.load(args.anatomy)
     except Exception as e:
-        print(f"Error loading anatomy image: {e}", file=sys.stderr)
+        print("Failed to load the anatomy image '{}': {}".format(args.anatomy, e), file=sys.stderr)
         sys.exit(1)
 
     for tractogram in args.tractograms:
         if nib.streamlines.detect_format(tractogram) is not nib.streamlines.TckFile:
-            print(f"Skipping non-TCK file: '{tractogram}'")
+            print("Skipping non-TCK file: '{}'".format(tractogram))
             continue
 
         output_filename = os.path.splitext(tractogram)[0] + '.trk'
         if os.path.isfile(output_filename) and not args.force:
-            print(f"Skipping existing file: '{output_filename}'. Use -f to overwrite.")
+            print("Skipping existing file: '{}'. Use -f to overwrite.".format(output_filename))
             continue
 
         header = {}
@@ -45,9 +45,9 @@ def tck2trk(args=None):
         try:
             tck = nib.streamlines.load(tractogram)
             nib.streamlines.save(tck.tractogram, output_filename, header=header)
-            print(f"Converted: '{tractogram}' -> '{output_filename}'")
+            print("Converted: '{}' -> '{}'".format(tractogram, output_filename))
         except Exception as e:
-            print(f"Error converting '{tractogram}': {e}", file=sys.stderr)
+            print("Error converting '{}': {}".format(tractogram, e), file=sys.stderr)
 
 if __name__ == "__main__":
     tck2trk()
