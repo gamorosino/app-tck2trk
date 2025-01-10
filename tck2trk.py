@@ -3,6 +3,7 @@ import os
 import nibabel as nib
 from nibabel.streamlines import Field
 from nibabel.orientations import aff2axcodes
+import sys
 
 def build_argparser_tck2trk():
     DESCRIPTION = "Convert tractograms (TCK -> TRK)."
@@ -22,7 +23,8 @@ def tck2trk(args=None):
     try:
         nii = nib.load(args.anatomy)
     except Exception as e:
-        parser.error(f"Error loading anatomy image: {e}")
+        print(f"Error loading anatomy image: {e}", file=sys.stderr)
+        sys.exit(1)
 
     for tractogram in args.tractograms:
         if nib.streamlines.detect_format(tractogram) is not nib.streamlines.TckFile:
@@ -45,7 +47,7 @@ def tck2trk(args=None):
             nib.streamlines.save(tck.tractogram, output_filename, header=header)
             print(f"Converted: '{tractogram}' -> '{output_filename}'")
         except Exception as e:
-            print(f"Error converting '{tractogram}': {e}")
+            print(f"Error converting '{tractogram}': {e}", file=sys.stderr)
 
 if __name__ == "__main__":
     tck2trk()
