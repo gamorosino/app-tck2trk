@@ -5,8 +5,8 @@
 
 # Extract fields from config.json
 tck=$(jq -r .tck config.json)
-t1w=$(jq -r .t1w config.json)
-t2w=$(jq -r .t2w config.json)
+t1w=$(jq -r .t1 config.json)
+t2w=$(jq -r .t2 config.json)
 parc=$(jq -r .parc config.json)
 mask=$(jq -r .mask config.json)
 
