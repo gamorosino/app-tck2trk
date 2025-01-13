@@ -124,4 +124,4 @@ The converted TRK files are saved in the same directory as the input TCK files, 
 - Use the `-f` flag to overwrite output files if they already exist.
 
 ## Acknowledgments
-This script was created to streamline the conversion of tractography files while ensuring alignment with reference anatomical images.
+Based on the script of Marc-Alexandre Côté (https://gist.github.com/MarcCote/ea6842cc4c3950f7596fc3c8a0be0154).
